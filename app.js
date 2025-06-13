@@ -1,33 +1,34 @@
+// BACKEND - ESTRUCTURA BASE DEL PROYECTO TRUEQUE 2.0 (ES MODULES)
+
+// === app.js ===
 import express from 'express';
-import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import itemRoutes from './routes/item.routes.js';
-import categoryRoutes from './routes/category.routes.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import authRoutes from './routes/auth.js';
+import itemRoutes from './routes/items.js';
+import tradeRoutes from './routes/trades.js';
 
 dotenv.config();
 const app = express();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// HTML principal
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/trades', tradeRoutes);
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views/index.html'));
+  res.send('API Trueque 2.0 funcionando 🚀');
 });
 
-// Rutas
-app.use('/api/items', itemRoutes);
-app.use('/api/categories', categoryRoutes);
-
-const PORT = process.env.PORT || 3000;
-mongoose
-  .connect(process.env.MONGO_URI)
+// Conexión DB y servidor
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+    app.listen(process.env.PORT || 5000, () => {
+      console.log('Servidor corriendo en puerto', process.env.PORT || 5000);
+    });
   })
-  .catch((err) => console.error(err));
+  .catch(err => console.log('Error DB:', err));
