@@ -1,21 +1,20 @@
+// === routes/trades.js ===
 import express from 'express';
 import {
   createTrade,
   getTrades,
   getTradeById,
   updateTradeStatus,
-  deleteTrade,
+  deleteTrade
 } from '../controllers/tradeController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.use(authMiddleware); // todas rutas protegidas
-
-router.post('/', createTrade);
-router.get('/', getTrades);
-router.get('/:id', getTradeById);
-router.put('/:id', updateTradeStatus);
-router.delete('/:id', deleteTrade);
+router.post('/', authMiddleware, createTrade); // Crear propuesta
+router.get('/', authMiddleware, getTrades); // Ver todas las propuestas del usuario
+router.get('/:id', authMiddleware, getTradeById); // Ver propuesta específica
+router.patch('/:id', authMiddleware, updateTradeStatus); // Aceptar / rechazar
+router.delete('/:id', authMiddleware, deleteTrade); // Eliminar propuesta enviada
 
 export default router;

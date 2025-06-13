@@ -1,4 +1,3 @@
-// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -8,6 +7,9 @@ import ItemsList from './pages/ItemsList';
 import ItemDetail from './pages/ItemDetail';
 import CreateItem from './pages/CreateItem';
 import TradesList from './pages/TradesList';
+import CreateTrade from './pages/CreateTrade';  // <--- crea este archivo
+
+import Navbar from './components/Navbar';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -17,6 +19,7 @@ function PrivateRoute({ children }) {
 const App = () => (
   <AuthProvider>
     <Router>
+      <Navbar />  {/* Aquí va el navbar */}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -49,6 +52,14 @@ const App = () => (
           element={
             <PrivateRoute>
               <TradesList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/trades/new"
+          element={
+            <PrivateRoute>
+              <CreateTrade />
             </PrivateRoute>
           }
         />

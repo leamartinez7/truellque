@@ -9,7 +9,7 @@ export const getItems = async (req, res) => {
   }
 };
 
-export const getItem = async (req, res) => {
+export const getItemById = async (req, res) => {
   try {
     const item = await Item.findById(req.params.id).populate('createdBy', 'name location');
     if (!item) return res.status(404).json({ message: 'Item no encontrado' });
