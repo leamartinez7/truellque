@@ -145,7 +145,7 @@ const Items = () => {
         >
           <div
             className="bg-white rounded-lg max-w-lg w-full p-4 relative"
-            onClick={(e) => e.stopPropagation()} // evita que al hacer click adentro se cierre
+            onClick={(e) => e.stopPropagation()} 
           >
             <img
               src={`http://localhost:5000${modalItem.image}`}

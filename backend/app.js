@@ -23,7 +23,7 @@ app.use('/api/trades', tradeRoutes);
 app.use('/uploads', express.static(path.resolve('uploads')));
 
 app.get('/', (req, res) => {
-  res.send('API Trueque 2.0 funcionando 🚀');
+  res.send('API Trueque 2.0 funcionando');
 });
 
 // Conexión DB y servidor

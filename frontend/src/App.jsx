@@ -27,7 +27,7 @@ function App() {
           <Route path="/items/edit/:id" element={<EditItem />} />
           <Route path="/trades/new/:itemId" element={<CreateTrade />} />
 
-          {/* Alias de rutas para trades */}
+          {/* Rutas para trades */}
           <Route path="/trades" element={<TradeList />} />
           <Route path="/trades/new" element={<CreateTrade />} />
         </Routes>

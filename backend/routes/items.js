@@ -3,7 +3,7 @@ import express from 'express';
 import {
   getAllItems,
   getItemById,
-  getItemByIdPublic,   // ← AQUÍ
+  getItemByIdPublic,
   createItem,
   updateItem,
   deleteItem,
@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.get('/', authMiddleware, getAllItems);
 router.get('/mine', authMiddleware, getMyItems);
-router.get('/public/:id', authMiddleware, getItemByIdPublic); // ← NUEVA RUTA
+router.get('/public/:id', authMiddleware, getItemByIdPublic); 
 router.get('/:id', authMiddleware, getItemById);
 router.post('/', authMiddleware, upload.single('image'), createItem);
 router.put('/:id', authMiddleware, updateItem);
