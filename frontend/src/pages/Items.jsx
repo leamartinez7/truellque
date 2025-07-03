@@ -6,7 +6,7 @@ import AuthContext from '../context/AuthContext';
 const Items = () => {
   const [items, setItems] = useState([]);
   const { user } = useContext(AuthContext);
-  const [modalItem, setModalItem] = useState(null); // ⬅️ Ahora guardamos el item completo
+  const [modalItem, setModalItem] = useState(null);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -20,7 +20,15 @@ const Items = () => {
     if (user) fetchItems();
   }, [user]);
 
-  if (!user) return <p className="text-center mt-10">Cargando usuario…</p>;
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <p className="text-center text-red-600 text-lg">
+          🔒 Debes iniciar sesión para ver los ítems publicados.
+        </p>
+      </div>
+    );
+  }
 
   const propios = items.filter((item) => item.createdBy && item.createdBy._id === user._id);
   const ajenos = items.filter((item) => item.createdBy && item.createdBy._id !== user._id);
@@ -107,7 +115,9 @@ const Items = () => {
                     onClick={() => setModalItem(item)}
                   />
                 )}
-                <p className="text-xs text-gray-500 mt-2">Publicado por: {item.createdBy.name}</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Publicado por: {item.createdBy.name}
+                </p>
               </div>
               <div className="mt-4 flex justify-end">
                 <button
@@ -137,7 +147,7 @@ const Items = () => {
         </div>
       </section>
 
-      {/* Modal de imagen ampliada */}
+      {/* Modal */}
       {modalItem && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center"
@@ -145,7 +155,7 @@ const Items = () => {
         >
           <div
             className="bg-white rounded-lg max-w-lg w-full p-4 relative"
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
           >
             <img
               src={`http://localhost:5000${modalItem.image}`}
@@ -159,11 +169,11 @@ const Items = () => {
               {modalItem.price ? `$${modalItem.price}` : 'Sin precio'}
             </p>
             <button
-            onClick={() => setModalItem(null)}
-            className="absolute top-2 right-2 bg-black bg-opacity-60 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-opacity-80"
-            aria-label="Cerrar modal"
+              onClick={() => setModalItem(null)}
+              className="absolute top-2 right-2 bg-black bg-opacity-60 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-opacity-80"
+              aria-label="Cerrar modal"
             >
-            &times;
+              &times;
             </button>
           </div>
         </div>

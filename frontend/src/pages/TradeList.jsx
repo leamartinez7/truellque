@@ -1,3 +1,4 @@
+// src/pages/TradeList.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
@@ -7,55 +8,41 @@ const TradeList = () => {
   const { user } = useContext(AuthContext);
   const [trades, setTrades] = useState([]);
   const [activeTab, setActiveTab] = useState('received');
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
+  /* ─────────────────────────────────────────────
+     Solo llamamos a la API si el usuario existe  */
   useEffect(() => {
+    if (!user) return;  
+
     const fetchTrades = async () => {
       try {
         const res = await api.get('/trades');
         setTrades(res.data);
       } catch (err) {
         console.error('Error al cargar trades:', err);
+        setError(true);
       }
     };
+
     fetchTrades();
-  }, []);
+  }, [user]);            
 
-  const handleAccept = async (id) => {
-    try {
-      await api.put(`/trades/${id}`, { status: 'accepted' });
-      navigate(`/chat/${id}`);
-    } catch (err) {
-      console.error('Error al aceptar el trueque', err);
-    }
-  };
+  /* ──────────────────────────────
+     Vista cuando no hay sesión    */
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <p className="text-center text-gray-700">
+          🔐 Debes iniciar sesión para ver tus propuestas de trueque.
+        </p>
+      </div>
+    );
+  }
 
-  const handleReject = async (id) => {
-    const confirm = window.confirm('¿Rechazar esta propuesta?');
-    if (!confirm) return;
-
-    try {
-      await api.put(`/trades/${id}`, { status: 'rejected' });
-      setTrades((prev) =>
-        prev.map((t) => (t._id === id ? { ...t, status: 'rejected' } : t))
-      );
-    } catch (err) {
-      console.error('Error al rechazar el trueque', err);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const confirm = window.confirm('¿Eliminar esta propuesta rechazada?');
-    if (!confirm) return;
-
-    try {
-      await api.delete(`/trades/${id}`);
-      setTrades((prev) => prev.filter((t) => t._id !== id));
-    } catch (err) {
-      console.error('Error al eliminar trueque', err);
-    }
-  };
-
+  /* ──────────────────────────────
+     Filtrado de propuestas        */
   const filteredTrades = trades.filter((trade) => {
     if (!trade.toUser || !trade.fromUser) return false;
     return activeTab === 'received'
@@ -63,6 +50,8 @@ const TradeList = () => {
       : trade.fromUser._id === user._id;
   });
 
+  /* ──────────────────────────────
+     Render                         */
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <h2 className="text-3xl font-bold text-center text-teal-700 mb-6">
@@ -91,6 +80,12 @@ const TradeList = () => {
           Enviadas
         </button>
       </div>
+
+      {error && (
+        <p className="text-center text-red-600 mb-4">
+          Error al cargar tus propuestas. Inténtalo de nuevo más tarde.
+        </p>
+      )}
 
       <div className="max-w-3xl mx-auto space-y-4">
         {filteredTrades.length === 0 ? (

@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
@@ -20,11 +19,14 @@ const Login = () => {
       const res = await api.post('/auth/login', form);
       const { token, user } = res.data;
 
-      if (!token || !user) throw new Error();
+      if (!token || !user) throw new Error('Login inválido');
+
+      console.log('✅ Login exitoso:', user);
 
       login(user, token);
       navigate('/items');
     } catch (err) {
+      console.error('❌ Error de login:', err);
       setError('Credenciales inválidas');
     }
   };

@@ -1,9 +1,10 @@
-// src/pages/NewItem.jsx
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axiosConfig';
+import AuthContext from '../context/AuthContext';
 
 const NewItem = () => {
+  const { user } = useContext(AuthContext);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -11,7 +12,7 @@ const NewItem = () => {
     uso: '',
     price: '',
     location: '',
-    currency: 'ARS', 
+    currency: 'ARS',
   });
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState('');
@@ -56,6 +57,16 @@ const NewItem = () => {
     }
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <p className="text-center text-red-600 text-lg">
+          🔒 Debes iniciar sesión para crear un ítem.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
@@ -75,6 +86,7 @@ const NewItem = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Campos del formulario */}
           <input
             type="text"
             name="title"
